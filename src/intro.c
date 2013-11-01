@@ -378,9 +378,14 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							}
 							break;
 		}
+#ifdef _RENDER_320_240
+		SDL_Rect dst = {32,8,0,0};
+		SDL_BlitSurface(window,NULL,screen,&dst);
+#else
 		/* Zoom 2x */
 		doble = zoomSurface(window,2,2,0);
 		SDL_BlitSurface(doble,NULL,screen,NULL);
+#endif
 		SDL_Flip(screen);
 		SDL_FreeSurface(doble);
 		SDL_FreeSurface(screen);

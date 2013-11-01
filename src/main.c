@@ -13,7 +13,11 @@ void main() {
 
 	/* starting SDL */
 	initsdl();
+#ifdef _RENDER_320_240
+	screen = SDL_SetVideoMode(320,240,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+#else
 	screen = SDL_SetVideoMode(512,448,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+#endif
 
 	/* Loading part of the game */
 	while (state < 4) {

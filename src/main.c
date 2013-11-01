@@ -4,6 +4,7 @@
 
 # include "main.h"
 
+#undef main
 void main() {
 
 	SDL_Surface *screen = NULL;

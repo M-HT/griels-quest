@@ -1,7 +1,7 @@
 all: griel
 
 griel: ./src/main.c ./src/history.c ./src/intro.c ./src/game.c ./src/hud.c ./src/hero.c ./src/loading.c ./src/ending.c
-	gcc -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize ./src/main.c src/history.c ./src/intro.c ./src/game.c ./src/hud.c ./src/hero.c ./src/loading.c ./src/ending.c -o griels `sdl-config --cflags --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lSDL_gfx -lm
+	gcc -Duint="unsigned int" -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize ./src/main.c src/history.c ./src/intro.c ./src/game.c ./src/hud.c ./src/hero.c ./src/loading.c ./src/ending.c -o griels -lSDL_gfx `sdl-config --cflags --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
 
 clean:
 	rm -f griels

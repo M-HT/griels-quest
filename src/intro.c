@@ -1,6 +1,7 @@
 /* intro.c */
 
 # include "intro.h"
+# include "comun.h"
 
 void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 
@@ -24,40 +25,40 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_Event keystroke;
 
 	/* Load files */
-	temp = IMG_Load("/usr/share/griels/png/blackbox.png");
+	temp = IMG_Load(DATA_PATH "png/blackbox.png");
 	blackbox = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/karoshi.png");
+	temp = IMG_Load(DATA_PATH "png/karoshi.png");
 	karoshi = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/blackbox.png");
+	temp = IMG_Load(DATA_PATH "png/blackbox.png");
 	window = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/startscreen.png");
+	temp = IMG_Load(DATA_PATH "png/startscreen.png");
 	startscreen = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/startinfo.png");
+	temp = IMG_Load(DATA_PATH "png/startinfo.png");
 	startinfo = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/blocks.png");
+	temp = IMG_Load(DATA_PATH "png/blocks.png");
 	blocks = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/menu.png");
+	temp = IMG_Load(DATA_PATH "png/menu.png");
 	menu = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/fonts.png");
+	temp = IMG_Load(DATA_PATH "png/fonts.png");
 	arrow = SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/password.png");
+	temp = IMG_Load(DATA_PATH "png/password.png");
 	passwords = SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/fonts.png");
+	temp = IMG_Load(DATA_PATH "png/fonts.png");
 	fonts = SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);
-	start = Mix_LoadWAV("/usr/share/griels/fx/fx_start.ogg");
-	poff = Mix_LoadWAV("/usr/share/griels/fx/fx_poff.ogg");
-	error = Mix_LoadWAV("/usr/share/griels/fx/fx_error.ogg");
-	ding = Mix_LoadWAV("/usr/share/griels/fx/fx_ding.ogg");
+	start = Mix_LoadWAV(DATA_PATH "fx/fx_start.ogg");
+	poff = Mix_LoadWAV(DATA_PATH "fx/fx_poff.ogg");
+	error = Mix_LoadWAV(DATA_PATH "fx/fx_error.ogg");
+	ding = Mix_LoadWAV(DATA_PATH "fx/fx_ding.ogg");
 
 	SDL_Rect srcscreen = {0,0,256,224};
 	SDL_Rect destscreen = {0,0,256,224};

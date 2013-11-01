@@ -1,6 +1,7 @@
 /* history.c */
 
 # include "history.h"
+# include "comun.h"
 
 void history (SDL_Surface *screen, uint *state) {
 
@@ -38,20 +39,20 @@ void history (SDL_Surface *screen, uint *state) {
 	SDL_Rect destsent4 = {28,168,200,8};
 
 	/* Loading files */
-	temp = IMG_Load("/usr/share/griels/png/blackbox.png");
+	temp = IMG_Load(DATA_PATH "png/blackbox.png");
 	blackbox = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/blackbox.png");
+	temp = IMG_Load(DATA_PATH "png/blackbox.png");
 	window = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/howtoplay.png");
+	temp = IMG_Load(DATA_PATH "png/howtoplay.png");
 	pictures = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
-	temp = IMG_Load("/usr/share/griels/png/texts.png");
+	temp = IMG_Load(DATA_PATH "png/texts.png");
 	texts = SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);
-	bso = Mix_LoadMUS("/usr/share/griels/music/history.ogg");
-	lol = Mix_LoadWAV("/usr/share/griels/fx/fx_hahaha.ogg");
+	bso = Mix_LoadMUS(DATA_PATH "music/history.ogg");
+	lol = Mix_LoadWAV(DATA_PATH "fx/fx_hahaha.ogg");
 
 	/* Loop */
 	while (*state == 1) {

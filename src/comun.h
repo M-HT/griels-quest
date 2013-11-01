@@ -6,6 +6,11 @@
 #ifdef _GCW_ZERO
   #define _RUTAS_RELATIVAS
   #define _RENDER_320_240
+  #define KEY_START SDLK_RETURN
+  #define KEY_QUIT SDLK_ESCAPE
+#else
+  #define KEY_START SDLK_SPACE
+  #define KEY_QUIT SDLK_ESCAPE
 #endif
  
 #ifdef _RUTAS_RELATIVAS

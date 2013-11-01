@@ -61,9 +61,9 @@ void history (SDL_Surface *screen, uint *state) {
 			if (keystroke.type == SDL_QUIT)
 				exit(0);
 			if (keystroke.type == SDL_KEYDOWN) {
-				if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+				if (keystroke.key.keysym.sym == KEY_QUIT)
 					exit(0);
-				if (keystroke.key.keysym.sym == SDLK_SPACE)
+				if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL)
 					*state = 2;
 			}
 		}

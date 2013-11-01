@@ -3,6 +3,7 @@
 /* Under GPL v3 license */
 
 # include "main.h"
+# include "comun.h"
 
 #undef main
 void main() {

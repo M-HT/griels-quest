@@ -100,9 +100,9 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
 								if (keystroke.type == SDL_KEYDOWN) {
-									if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == SDLK_SPACE) {
+									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
 										counter = 341;;
 										step = 1;
 										fadecounter = 255;
@@ -128,9 +128,9 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
 								if (keystroke.type == SDL_KEYDOWN) {
-									if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == SDLK_SPACE) {
+									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
 										Mix_PlayChannel(-1,start,0);
 										step = 3;
 									}
@@ -152,9 +152,9 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
 								if (keystroke.type == SDL_KEYDOWN) {
-									if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == SDLK_SPACE) {
+									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
 										step = 1;
 										counter = 341;
 										fadecounter = 255;
@@ -232,7 +232,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
 								if (keystroke.type == SDL_KEYDOWN) {
-									if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == SDLK_UP) || (keystroke.key.keysym.sym == SDLK_DOWN)) {
 										if (posarrow == 0)
@@ -240,7 +240,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										else
 											posarrow = 0;
 									}
-									if ((keystroke.key.keysym.sym == SDLK_SPACE) || (keystroke.key.keysym.sym == SDLK_RETURN)) {
+									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
 										if (posarrow == 0) {
 											*state = 1;
 											*level = 1;
@@ -259,7 +259,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
 								if (keystroke.type == SDL_KEYDOWN) {
-									if (keystroke.key.keysym.sym == SDLK_ESCAPE)
+									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if (keystroke.key.keysym.sym == SDLK_RIGHT) {
 										if (destselector.x < 173) {
@@ -301,7 +301,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 											selectorpos -= 32;
 										}
 									}
-									if (keystroke.key.keysym.sym == SDLK_SPACE) {
+									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
 										if (selectorpos < 37) {
 											passint[n] = selectorpos;
 											if (n < 7)

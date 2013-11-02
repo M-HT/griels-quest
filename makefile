@@ -1,14 +1,49 @@
-all: griel
+#
+# use `make TARGET=gcw0` to build for GCW-Zero
+# and `make` for normal build
+#
 
-griel: ./src/main.c ./src/history.c ./src/intro.c ./src/game.c ./src/hud.c ./src/hero.c ./src/loading.c ./src/ending.c
-	gcc -Duint="unsigned int" -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize ./src/main.c src/history.c ./src/intro.c ./src/game.c ./src/hud.c ./src/hero.c ./src/loading.c ./src/ending.c -o griels -lSDL_gfx `sdl-config --cflags --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
+#TARGET	= gcw0
+
+NAME	= griels
+
+CFLAGS	= -s -O2 `sdl-config --cflags`
+CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
+
+# assume cross-compilation
+ifeq "$(TARGET)" "gcw0"
+    CC		= mipsel-linux-gcc
+    PFLAGS	= -mips32 -D_GCW_ZERO
+else
+    CC		= gcc
+
+    # detect mingw and do some fixes
+    ifeq ($(OS),Windows_NT)
+        PFLAGS	= -Duint="unsigned int" -D_RUTAS_RELATIVAS
+        NAME	= griels.exe
+    endif
+endif
+
+SRC	= ./src/main.c \
+	  ./src/history.c \
+	  ./src/intro.c \
+	  ./src/game.c \
+	  ./src/hud.c \
+	  ./src/hero.c \
+	  ./src/loading.c \
+	  ./src/ending.c
+
+all: $(NAME)
+
+$(NAME): $(SRC) ./src/comun.h
+	$(CC) $(PFLAGS) $(CFLAGS) $(SRC) -o $(NAME) $(CLIBS)
 
 clean:
-	rm -f griels
+	rm -f $(NAME)
 
 # Installation
 install:
-	cp griels /usr/bin/
+	cp $(NAME) /usr/bin/
 	cp griels.desktop /usr/share/applications
 	mkdir -p /usr/share/griels/music
 	cp ./music/* /usr/share/griels/music
@@ -21,7 +56,7 @@ install:
 	cp ./png/icon.png /usr/share/pixmaps/griels.png
 
 uninstall:
-	rm /usr/bin/griels
+	rm /usr/bin/$(NAME)
 	rm /usr/share/applications/griels.desktop
 	rm /usr/share/pixmaps/griels.png
 	rm -rf /usr/share/griels

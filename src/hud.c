@@ -1,6 +1,7 @@
 /* hud.c */
 
 # include "hud.h"
+# include "comun.h"
 
 void show_hud (struct hero griel, SDL_Surface *fonts, SDL_Surface *window, SDL_Surface *blocks, int round) {
 

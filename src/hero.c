@@ -1,6 +1,7 @@
 /* hero.c */
 
 # include "hero.h"
+# include "comun.h"
 
 void set_hero_init (struct hero *griel, int round) {
 

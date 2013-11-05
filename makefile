@@ -60,3 +60,6 @@ uninstall:
 	rm /usr/share/applications/griels.desktop
 	rm /usr/share/pixmaps/griels.png
 	rm -rf /usr/share/griels
+
+opk:	$(NAME)
+	./make_opk.sh

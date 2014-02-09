@@ -10,6 +10,10 @@ NAME	= griels
 CFLAGS	= -s -O2 `sdl-config --cflags`
 CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
 
+ifdef RUTAS_RELATIVAS
+	CFLAGS += -D_RUTAS_RELATIVAS
+endif	
+
 # assume cross-compilation
 ifeq "$(TARGET)" "gcw0"
     CC		= mipsel-linux-gcc

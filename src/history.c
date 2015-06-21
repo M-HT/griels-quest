@@ -1,6 +1,12 @@
 /* history.c */
 
+# include <stdlib.h>
+# include <SDL_image.h>
+# include <SDL_rotozoom.h>
+# include <SDL_mixer.h>
+
 # include "history.h"
+# include "main.h"
 # include "comun.h"
 
 void history (SDL_Surface *screen, uint *state) {
@@ -20,7 +26,6 @@ void history (SDL_Surface *screen, uint *state) {
 	uint step = 0;
 	uint direction = 0;
 	uint waittime = 0;
-	uint tire[4] = {0,0,0,0};
 	uint playmusic = 0;
 
 	SDL_Rect srctitle = {0,0,256,16};

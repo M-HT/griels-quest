@@ -2,11 +2,24 @@
 /* Started on 17/04/2013 */
 /* Under GPL v3 license */
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <SDL.h>
+# include <SDL_ttf.h>
+# include <SDL_getenv.h>
+# include <SDL_mixer.h>
+
 # include "main.h"
+# include "ending.h"
+# include "game.h"
+# include "history.h"
+# include "intro.h"
 # include "comun.h"
 
+static void initsdl(void);
+
 #undef main
-void main() {
+int main() {
 
 	SDL_Surface *screen = NULL;
 	uint state = 0;
@@ -34,9 +47,10 @@ void main() {
 		}
 	}
 
+	return 0;
 }
 
-void initsdl() {
+static void initsdl(void) {
 
 	/* Center the window */
 	putenv("SDL_VIDEO_CENTERED=1");
@@ -86,4 +100,5 @@ int control_frames (int i, int frate) {
 		return 0;
 	}
 
+	return 0;
 }

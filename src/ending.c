@@ -1,6 +1,10 @@
 /* ending.c */
 
+# include <SDL_image.h>
+# include <SDL_mixer.h>
+
 # include "ending.h"
+# include "main.h"
 # include "comun.h"
 
 static SDL_Surface *load_ending_image (const char *filename) {
@@ -21,7 +25,6 @@ void ending (SDL_Surface *screen, uint *state) {
 	Mix_Music *bso;
 	Mix_Chunk *argh;
 
-	uint waittime = 0;
 	uint step = 0;
 	uint fadecounter = 255;
 	uint counter = 0;

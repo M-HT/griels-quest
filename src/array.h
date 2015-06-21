@@ -1,5 +1,8 @@
 /* arrays. h */
 
+#ifndef _ARRAY_H_
+#define _ARRAY_H_
+
 struct hero {
 
 	int score;
@@ -20,3 +23,5 @@ struct hero {
 	uint grial;
 
 };
+
+#endif /* _ARRAY_H_ */

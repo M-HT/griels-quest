@@ -1,7 +1,15 @@
 /* intro.c */
 
+# include <stdlib.h>
+# include <SDL_image.h>
+# include <SDL_rotozoom.h>
+# include <SDL_mixer.h>
+
 # include "intro.h"
+# include "main.h"
 # include "comun.h"
+
+static int passwvalidate (uint passint[]);
 
 void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 
@@ -407,7 +415,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 
 }
 
-int passwvalidate (uint passint[]) {
+static int passwvalidate (uint passint[]) {
 
 	int n = 0;
 

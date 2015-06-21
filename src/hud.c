@@ -71,7 +71,7 @@ void show_hud (struct hero griel, SDL_Surface *fonts, SDL_Surface *window, SDL_S
 
 	/* Show lifes */
 	for (i=1;i<4;i++) {
-		if (i < griel.lifes) {
+		if ((uint)i < griel.lifes) {
 			srcblocks.x = 96;
 			srcblocks.y = 32;
 			desblocks.y = 0;

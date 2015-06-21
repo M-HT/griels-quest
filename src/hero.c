@@ -195,7 +195,7 @@ void set_hero_init (struct hero *griel, int round) {
 
 void extralife (struct hero *griel, uint *uplife) {
 
-	if (griel->score > (5000 + (*uplife * 5000))) {
+	if ((uint)griel->score > (5000 + (*uplife * 5000))) {
 		*uplife += 1;
 		if (griel->lifes < 4)
 			griel->lifes += 1;
@@ -203,7 +203,7 @@ void extralife (struct hero *griel, uint *uplife) {
 
 }
 
-void show_hero (struct hero *griel, int counter, SDL_Surface *window, SDL_Surface *blocks, int *round, int *step, uint *waittime, uint *soundblock, Mix_Chunk *giveup) {
+void show_hero (struct hero *griel, int counter, SDL_Surface *window, SDL_Surface *blocks, int *round, uint *step, uint *waittime, uint *soundblock, Mix_Chunk *giveup) {
 
 	SDL_Rect srchero = {96,32,16,16};
 	SDL_Rect desthero = {0,0,16,16};

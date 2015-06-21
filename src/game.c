@@ -1,7 +1,20 @@
 /* game.c */
 
+# include <stdlib.h>
+# include <SDL_image.h>
+# include <SDL_rotozoom.h>
+# include <SDL_mixer.h>
+
 # include "game.h"
+# include "hero.h"
+# include "hud.h"
+# include "loading.h"
+# include "main.h"
 # include "comun.h"
+
+static void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_Surface *window, SDL_Surface *blocks, int round, int counter, Mix_Chunk *key);
+static void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chunk *kill, uint *grieltouch);
+static void controls (struct hero *griel, uint *fullscreench);
 
 void game (SDL_Surface *screen, uint *state, uint *level) {
 
@@ -39,13 +52,9 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	uint fadecounter = 255;
 	int framerate = 0;
 	uint fademode = 0;
-	uint i = 0;
-	uint j = 0;
 	int round = (*level - 1);
-	int points = 0;
 	int counter = 0;
 	int animationtime = 0;
-	uint pausa = 0;
 	uint loadoninit = 0;
 	uint uplife = 0;
 	uint soundblock = 0;
@@ -136,9 +145,6 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 
 	SDL_Rect srcfonts = {0,128,8,8};
 	SDL_Rect desfonts = {136,96,8,8};
-	SDL_Rect srcblocks = {0,0,16,16};
-	SDL_Rect desblocks = {0,0,16,16};
-	SDL_Rect srctext = {0,0,256,0};
 
 	while (*state == 2) {
 		framerate = control_frames(1,0);
@@ -318,7 +324,7 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 
 }
 
-void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_Surface *window, SDL_Surface *blocks, int round, int counter, Mix_Chunk *key) {
+static void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_Surface *window, SDL_Surface *blocks, int round, int counter, Mix_Chunk *key) {
 
 	SDL_Rect srcblocks = {0,0,16,16};
 	SDL_Rect desblocks = {0,0,16,16};
@@ -373,7 +379,7 @@ void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_
 
 }
 
-void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chunk *kill, uint *grieltouch) {
+static void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chunk *kill, uint *grieltouch) {
 
 	int deleteobject = 0;
 	int target[2] = {0,0};
@@ -429,7 +435,7 @@ void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chun
 				griel->locked = 0;
 				/* griel->direction = 2; */
 			}
-			if ((griel->direction + 3 == target[0]) && ((target[1] > 20) && (target[1] < 24)) && (griel->object > 0)) {
+			if ((griel->direction + 3 == (uint)target[0]) && ((target[1] > 20) && (target[1] < 24)) && (griel->object > 0)) {
 			/* Block movement if a object is after the arrow and Griel has a object */
 				griel->locked = 0;
 				/* griel->direction = 2; */
@@ -549,7 +555,7 @@ void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chun
 
 }
 
-void controls (struct hero *griel, uint *fullscreench) {
+static void controls (struct hero *griel, uint *fullscreench) {
 
 	SDL_Event keystroke;
 

@@ -1,5 +1,7 @@
 /* loading.c */
 
+# include <stdio.h>
+
 # include "loading.h"
 # include "comun.h"
 

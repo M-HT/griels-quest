@@ -16,6 +16,8 @@ static void show_tiles (struct hero *griel, int *animationtime, int map[][11][16
 static void check_obstacles (struct hero *griel, int round, int map[][11][16], Mix_Chunk *kill, uint *grieltouch);
 static void controls (struct hero *griel, uint *fullscreench);
 
+static Mix_Music *bsogame = NULL;
+
 void game (SDL_Surface *screen, uint *state, uint *level) {
 
 	SDL_Surface *roundscreen = NULL;
@@ -38,7 +40,6 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_Surface *passscreen09 = NULL;
 	SDL_Surface *passscreen10 = NULL;
 
-	Mix_Music *bsogame;
 	Mix_Music *gameover;
 	Mix_Chunk *stageclear;
 	Mix_Chunk *giveup;
@@ -195,7 +196,7 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 							break;
 			case 1: /* If stage starts now, load music */
 							if (loadoninit == 1) {
-								load_music(bsogame,round);
+								bsogame = load_music(bsogame,round);
 								loadoninit = 0;
 								set_hero_init (&griel, round);
 							}
@@ -315,7 +316,6 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_FreeSurface(passscreen08);
 	SDL_FreeSurface(passscreen09);
 	SDL_FreeSurface(passscreen10);
-	/* Mix_FreeMusic(bsogame); */
 	Mix_FreeMusic(gameover);
 	Mix_FreeChunk(stageclear);
 	Mix_FreeChunk(giveup);

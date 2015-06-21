@@ -563,7 +563,7 @@ static void controls (struct hero *griel, uint *fullscreench) {
 		if (keystroke.type == SDL_QUIT)
 			exit(0);
 		if (keystroke.type == SDL_KEYDOWN) {
-			if (keystroke.key.keysym.sym == KEY_START) {
+			if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 				if ((griel->locked == 0) && (griel->deathanimation == 0)) {
 					griel->locked = 1;
 					griel->direction = 6;

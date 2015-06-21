@@ -110,7 +110,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_KEYDOWN) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
+									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										counter = 341;;
 										step = 1;
 										fadecounter = 255;
@@ -138,7 +138,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_KEYDOWN) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
+									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										Mix_PlayChannel(-1,start,0);
 										step = 3;
 									}
@@ -162,7 +162,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								if (keystroke.type == SDL_KEYDOWN) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
-									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
+									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										step = 1;
 										counter = 341;
 										fadecounter = 255;
@@ -248,7 +248,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										else
 											posarrow = 0;
 									}
-									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
+									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										if (posarrow == 0) {
 											*state = 1;
 											*level = 1;
@@ -309,7 +309,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 											selectorpos -= 32;
 										}
 									}
-									if (keystroke.key.keysym.sym == KEY_START || keystroke.key.keysym.sym == SDLK_LCTRL) {
+									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										if (selectorpos < 37) {
 											passint[n] = selectorpos;
 											if (n < 7)

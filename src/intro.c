@@ -95,8 +95,8 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 	uint result = 0;
 
 	/* Loop */
+	framerate = control_frames(1,0);
 	while (*state == 0) {
-		framerate = control_frames(1,0);
 		switch (step) {
 			case 0: /* Karoshi logo */
 							SDL_BlitSurface(karoshi,&srcscreen,window,&destscreen);
@@ -396,8 +396,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 #endif
 		SDL_Flip(screen);
 		SDL_FreeSurface(doble);
-		SDL_FreeSurface(screen);
-		control_frames(2,framerate);
+		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */

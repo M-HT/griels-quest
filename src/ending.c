@@ -8,19 +8,19 @@
 # include "comun.h"
 
 static SDL_Surface *load_ending_image (const char *filename) {
-	SDL_Surface *temp, *ending;
+	SDL_Surface *temp, *ending_image;
 
 	temp = IMG_Load(filename);
-	ending = SDL_DisplayFormat(temp);
+	ending_image = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
 
-	return ending;
+	return ending_image;
 }
 
 void ending (SDL_Surface *screen, uint *state) {
 
 	SDL_Surface *blackbox = NULL;
-	SDL_Surface *ending[4] = { NULL, NULL, NULL, NULL };
+	SDL_Surface *endings[4] = { NULL, NULL, NULL, NULL };
 
 	Mix_Music *bso;
 	Mix_Chunk *argh;
@@ -33,16 +33,16 @@ void ending (SDL_Surface *screen, uint *state) {
 	/* Loading files */
 #ifdef _RENDER_320_240
 	blackbox = load_ending_image(DATA_PATH "png/blackbox.png");
-	ending[0] = load_ending_image(DATA_PATH "png/ending1_small.png");
-	ending[1] = load_ending_image(DATA_PATH "png/ending2_small.png");
-	ending[2] = load_ending_image(DATA_PATH "png/ending3_small.png");
-	ending[3] = load_ending_image(DATA_PATH "png/theend_small.png");
+	endings[0] = load_ending_image(DATA_PATH "png/ending1_small.png");
+	endings[1] = load_ending_image(DATA_PATH "png/ending2_small.png");
+	endings[2] = load_ending_image(DATA_PATH "png/ending3_small.png");
+	endings[3] = load_ending_image(DATA_PATH "png/theend_small.png");
 #else
 	blackbox = load_ending_image(DATA_PATH "png/blackbox2.png");
-	ending[0] = load_ending_image(DATA_PATH "png/ending1.png");
-	ending[1] = load_ending_image(DATA_PATH "png/ending2.png");
-	ending[2] = load_ending_image(DATA_PATH "png/ending3.png");
-	ending[3] = load_ending_image(DATA_PATH "png/theend.png");
+	endings[0] = load_ending_image(DATA_PATH "png/ending1.png");
+	endings[1] = load_ending_image(DATA_PATH "png/ending2.png");
+	endings[2] = load_ending_image(DATA_PATH "png/ending3.png");
+	endings[3] = load_ending_image(DATA_PATH "png/theend.png");
 #endif
 	argh = Mix_LoadWAV(DATA_PATH "fx/fx_uaaah.ogg");
 	bso = Mix_LoadMUS(DATA_PATH "music/ending.ogg");
@@ -54,16 +54,16 @@ void ending (SDL_Surface *screen, uint *state) {
 	SDL_Rect destending = {0,0,512,448};
 #endif
 
+	framerate = control_frames(1,0);
 	while (*state == 3) {
-		framerate = control_frames(1,0);
 
 #ifdef _RENDER_320_240
-		SDL_BlitSurface(ending[step],NULL,screen,&dst);
+		SDL_BlitSurface(endings[step],NULL,screen,&dst);
 		/* Transparency */
 		SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
 		SDL_BlitSurface(blackbox,NULL,screen,&dst);
 #else
-		SDL_BlitSurface(ending[step],&srcending,screen,&destending);
+		SDL_BlitSurface(endings[step],&srcending,screen,&destending);
 		/* Transparency */
 		SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
 		SDL_BlitSurface(blackbox,&srcending,screen,&destending);
@@ -116,15 +116,14 @@ void ending (SDL_Surface *screen, uint *state) {
 							break;
 		}
 		SDL_Flip(screen);
-		control_frames(2,framerate);
-		SDL_FreeSurface(screen);
+		framerate = control_frames(2,framerate);
 
 	}
 
-	SDL_FreeSurface(ending[0]);
-	SDL_FreeSurface(ending[1]);
-	SDL_FreeSurface(ending[2]);
-	SDL_FreeSurface(ending[3]);
+	SDL_FreeSurface(endings[0]);
+	SDL_FreeSurface(endings[1]);
+	SDL_FreeSurface(endings[2]);
+	SDL_FreeSurface(endings[3]);
 	SDL_FreeSurface(blackbox);
 	Mix_FreeChunk(argh);
 	Mix_FreeMusic(bso);

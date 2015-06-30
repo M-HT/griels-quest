@@ -147,8 +147,8 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_Rect srcfonts = {0,128,8,8};
 	SDL_Rect desfonts = {136,96,8,8};
 
+	framerate = control_frames(1,0);
 	while (*state == 2) {
-		framerate = control_frames(1,0);
 		if (counter < 58)
 			counter ++;
 		else
@@ -225,10 +225,12 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 							show_hero(&griel, counter, window, blocks, &round, &step, &waittime, &soundblock, giveup);
 							/* Key pressed */
 							controls(&griel,&fullscreench);
+#ifndef _FULLSCREEN_ONLY
 							if (fullscreench == 1) {
 								SDL_WM_ToggleFullScreen (screen);
 								fullscreench = 0;
 							}
+#endif
 							break;
 			case 2: /* gameover screen for 10 seconds */
 							if (waittime < 600) {
@@ -294,8 +296,7 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 #endif
 		SDL_Flip(screen);
 		SDL_FreeSurface(doble);
-		SDL_FreeSurface(screen);
-		control_frames(2,framerate);
+		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */
@@ -593,8 +594,10 @@ static void controls (struct hero *griel, uint *fullscreench) {
 					griel->direction = 4;
 				}
 			}
+#ifndef _FULLSCREEN_ONLY
 			if (keystroke.key.keysym.sym == SDLK_f)
 				*fullscreench = 1;
+#endif
 			if (keystroke.key.keysym.sym == KEY_QUIT)
 				exit(0);
 		}

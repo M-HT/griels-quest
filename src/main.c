@@ -27,10 +27,15 @@ int main() {
 
 	/* starting SDL */
 	initsdl();
-#ifdef _RENDER_320_240
-	screen = SDL_SetVideoMode(320,240,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+#ifdef _FULLSCREEN_ONLY
+	#define SDL_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN
 #else
-	screen = SDL_SetVideoMode(512,448,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+	#define SDL_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF
+#endif
+#ifdef _RENDER_320_240
+	screen = SDL_SetVideoMode(320,240,32,SDL_FLAGS);
+#else
+	screen = SDL_SetVideoMode(512,448,32,SDL_FLAGS);
 #endif
 
 	/* Loading part of the game */
@@ -95,9 +100,14 @@ int control_frames (int i, int frate) {
 
 	if (i==2) {
 		int diff = now - frate;
-		if (diff<16)
-			SDL_Delay(16-diff);
-		return 0;
+		if (diff>=16)
+			return (diff<=32)?frate+16:now-16;
+		do {
+			SDL_Delay(1);
+			now = SDL_GetTicks();
+			diff = now - frate;
+		} while (diff<16);
+		return frate+16;
 	}
 
 	return 0;

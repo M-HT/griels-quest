@@ -60,8 +60,8 @@ void history (SDL_Surface *screen, uint *state) {
 	lol = Mix_LoadWAV(DATA_PATH "fx/fx_hahaha.ogg");
 
 	/* Loop */
+	framerate = control_frames(1,0);
 	while (*state == 1) {
-		framerate = control_frames(1,0);
 		while (SDL_PollEvent(&keystroke)) {
 			if (keystroke.type == SDL_QUIT)
 				exit(0);
@@ -231,8 +231,7 @@ void history (SDL_Surface *screen, uint *state) {
 #endif
 		SDL_Flip(screen);
 		SDL_FreeSurface(doble);
-		SDL_FreeSurface(screen);
-		control_frames(2,framerate);
+		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */

@@ -2,11 +2,11 @@
 
 # include <stdlib.h>
 # include <SDL_image.h>
-# include <SDL_rotozoom.h>
 # include <SDL_mixer.h>
 
 # include "history.h"
 # include "main.h"
+# include "zoom.h"
 # include "comun.h"
 
 void history (SDL_Surface *screen, uint *state) {
@@ -15,7 +15,6 @@ void history (SDL_Surface *screen, uint *state) {
 	SDL_Surface *pictures = NULL;
 	SDL_Surface *texts = NULL;
 	SDL_Surface *temp = NULL;
-	SDL_Surface *doble = NULL;
 	SDL_Surface *window = NULL;
 
 	SDL_Event keystroke;
@@ -226,11 +225,9 @@ void history (SDL_Surface *screen, uint *state) {
 		SDL_Rect dst = {32,8,0,0};
 		SDL_BlitSurface(window,NULL,screen,&dst);
 #else
-		doble = zoomSurface(window,2,2,0);
-		SDL_BlitSurface(doble,NULL,screen,NULL);
+		BlitDoubleSurface(window,screen);
 #endif
 		SDL_Flip(screen);
-		SDL_FreeSurface(doble);
 		framerate = control_frames(2,framerate);
 	}
 

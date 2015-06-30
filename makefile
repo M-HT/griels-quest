@@ -35,7 +35,8 @@ SRC	= ./src/main.c \
 	  ./src/hud.c \
 	  ./src/hero.c \
 	  ./src/loading.c \
-	  ./src/ending.c
+	  ./src/ending.c \
+	  ./src/zoom.c
 
 all: $(NAME)
 

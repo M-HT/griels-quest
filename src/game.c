@@ -2,7 +2,6 @@
 
 # include <stdlib.h>
 # include <SDL_image.h>
-# include <SDL_rotozoom.h>
 # include <SDL_mixer.h>
 
 # include "game.h"
@@ -10,6 +9,7 @@
 # include "hud.h"
 # include "loading.h"
 # include "main.h"
+# include "zoom.h"
 # include "comun.h"
 
 static void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_Surface *window, SDL_Surface *blocks, int round, int counter, Mix_Chunk *key);
@@ -27,7 +27,6 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_Surface *fonts = NULL;
 	SDL_Surface *blackbox = NULL;
 	SDL_Surface *window = NULL;
-	SDL_Surface *doble = NULL;
 	SDL_Surface *gameoverscreen = NULL;
 	SDL_Surface *passscreen01 = NULL;
 	SDL_Surface *passscreen02 = NULL;
@@ -291,11 +290,9 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 		SDL_BlitSurface(window,NULL,screen,&dst);
 #else
 		/* Zoom 2x */
-		doble = zoomSurface(window,2,2,0);
-		SDL_BlitSurface(doble,NULL,screen,NULL);
+		BlitDoubleSurface(window,screen);
 #endif
 		SDL_Flip(screen);
-		SDL_FreeSurface(doble);
 		framerate = control_frames(2,framerate);
 	}
 

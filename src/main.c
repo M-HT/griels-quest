@@ -32,10 +32,15 @@ int main() {
 #else
 	#define SDL_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF
 #endif
-#ifdef _RENDER_320_240
-	screen = SDL_SetVideoMode(320,240,32,SDL_FLAGS);
+#ifdef _DISPLAY_16BITS
+	#define SDL_DISPLAY_BITS 16
 #else
-	screen = SDL_SetVideoMode(512,448,32,SDL_FLAGS);
+	#define SDL_DISPLAY_BITS 32
+#endif
+#ifdef _RENDER_320_240
+	screen = SDL_SetVideoMode(320,240,SDL_DISPLAY_BITS,SDL_FLAGS);
+#else
+	screen = SDL_SetVideoMode(512,448,SDL_DISPLAY_BITS,SDL_FLAGS);
 #endif
 
 	/* Loading part of the game */

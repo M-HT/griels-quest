@@ -9,6 +9,13 @@
   #define KEY_START SDLK_RETURN
   #define KEY_START2 SDLK_LCTRL
   #define KEY_QUIT SDLK_ESCAPE
+#elif defined(PANDORA)
+  #define _RUTAS_RELATIVAS
+  #define _FULLSCREEN_ONLY
+  #define _DISPLAY_16BITS
+  #define KEY_START SDLK_SPACE
+  #define KEY_START2 SDLK_PAGEDOWN
+  #define KEY_QUIT SDLK_ESCAPE
 #else
   #define KEY_START SDLK_SPACE
   #define KEY_START2 SDLK_SPACE

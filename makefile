@@ -1,5 +1,6 @@
 #
 # use `make TARGET=gcw0` to build for GCW-Zero
+# use `make TARGET=pandora` to build for Pandora
 # and `make` for normal build
 #
 
@@ -12,13 +13,18 @@ CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
 
 ifdef RUTAS_RELATIVAS
 	CFLAGS += -D_RUTAS_RELATIVAS
-endif	
+endif
 
 # assume cross-compilation
 ifeq "$(TARGET)" "gcw0"
     CC		= mipsel-linux-gcc
     PFLAGS	= -mips32 -D_GCW_ZERO
-else
+endif
+ifeq "$(TARGET)" "pandora"
+    CC		= pandora-gcc
+    PFLAGS	= -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=vfpv3 -mfloat-abi=softfp -DPANDORA
+endif
+ifeq "$(TARGET)" ""
     CC		= gcc
 
     # detect mingw and do some fixes

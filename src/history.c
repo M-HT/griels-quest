@@ -1,7 +1,6 @@
 /* history.c */
 
 # include <stdlib.h>
-# include <SDL_image.h>
 # include <SDL_mixer.h>
 
 # include "history.h"
@@ -43,18 +42,10 @@ void history (SDL_Surface *screen, uint *state) {
 	SDL_Rect destsent4 = {28,168,200,8};
 
 	/* Loading files */
-	temp = IMG_Load(DATA_PATH "png/blackbox.png");
-	blackbox = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/blackbox.png");
-	window = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/howtoplay.png");
-	pictures = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/texts.png");
-	texts = SDL_DisplayFormatAlpha(temp);
-	SDL_FreeSurface(temp);
+	blackbox = load_image_display_format(DATA_PATH "png/blackbox.png");
+	window = SDL_ConvertSurface(blackbox, blackbox->format, blackbox->flags);
+	pictures = load_image_display_format(DATA_PATH "png/howtoplay.png");
+	texts = load_image_display_format(DATA_PATH "png/texts.png");
 	bso = Mix_LoadMUS(DATA_PATH "music/history.ogg");
 	lol = Mix_LoadWAV(DATA_PATH "fx/fx_hahaha.ogg");
 
@@ -70,6 +61,20 @@ void history (SDL_Surface *screen, uint *state) {
 				if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2))
 					*state = 2;
 			}
+#if defined(GP2X)
+			if (keystroke.type == SDL_JOYBUTTONDOWN) {
+				if (keystroke.jbutton.button == BUTTON_QUIT)
+					exit(0);
+				if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2))
+					*state = 2;
+				if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
+					Change_HW_Audio_Volume(4);
+				}
+				if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
+					Change_HW_Audio_Volume(-4);
+				}
+			}
+#endif
 		}
 		switch (step) {
 			case 0: /* show title */

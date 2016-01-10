@@ -1,21 +1,10 @@
 /* ending.c */
 
-# include <SDL_image.h>
 # include <SDL_mixer.h>
 
 # include "ending.h"
 # include "main.h"
 # include "comun.h"
-
-static SDL_Surface *load_ending_image (const char *filename) {
-	SDL_Surface *temp, *ending_image;
-
-	temp = IMG_Load(filename);
-	ending_image = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-
-	return ending_image;
-}
 
 void ending (SDL_Surface *screen, uint *state) {
 
@@ -32,17 +21,17 @@ void ending (SDL_Surface *screen, uint *state) {
 
 	/* Loading files */
 #ifdef _RENDER_320_240
-	blackbox = load_ending_image(DATA_PATH "png/blackbox.png");
-	endings[0] = load_ending_image(DATA_PATH "png/ending1_small.png");
-	endings[1] = load_ending_image(DATA_PATH "png/ending2_small.png");
-	endings[2] = load_ending_image(DATA_PATH "png/ending3_small.png");
-	endings[3] = load_ending_image(DATA_PATH "png/theend_small.png");
+	blackbox = load_image_display_format(DATA_PATH "png/blackbox.png");
+	endings[0] = load_image_display_format(DATA_PATH "png/ending1_small.png");
+	endings[1] = load_image_display_format(DATA_PATH "png/ending2_small.png");
+	endings[2] = load_image_display_format(DATA_PATH "png/ending3_small.png");
+	endings[3] = load_image_display_format(DATA_PATH "png/theend_small.png");
 #else
-	blackbox = load_ending_image(DATA_PATH "png/blackbox2.png");
-	endings[0] = load_ending_image(DATA_PATH "png/ending1.png");
-	endings[1] = load_ending_image(DATA_PATH "png/ending2.png");
-	endings[2] = load_ending_image(DATA_PATH "png/ending3.png");
-	endings[3] = load_ending_image(DATA_PATH "png/theend.png");
+	blackbox = load_image_display_format(DATA_PATH "png/blackbox2.png");
+	endings[0] = load_image_display_format(DATA_PATH "png/ending1.png");
+	endings[1] = load_image_display_format(DATA_PATH "png/ending2.png");
+	endings[2] = load_image_display_format(DATA_PATH "png/ending3.png");
+	endings[3] = load_image_display_format(DATA_PATH "png/theend.png");
 #endif
 	argh = Mix_LoadWAV(DATA_PATH "fx/fx_uaaah.ogg");
 	bso = Mix_LoadMUS(DATA_PATH "music/ending.ogg");

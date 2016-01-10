@@ -1,6 +1,7 @@
 #
 # use `make TARGET=gcw0` to build for GCW-Zero
 # use `make TARGET=pandora` to build for Pandora
+# use `make TARGET=gp2x` to build for GP2X
 # and `make` for normal build
 #
 
@@ -23,6 +24,12 @@ endif
 ifeq "$(TARGET)" "pandora"
     CC		= pandora-gcc
     PFLAGS	= -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=vfpv3 -mfloat-abi=softfp -DPANDORA
+endif
+ifeq "$(TARGET)" "gp2x"
+    CC		= arm-open2x-linux-gcc
+    PFLAGS	= -march=armv4t -mtune=arm920t -DGP2X
+    CFLAGS	+= -L`sdl-config --prefix`/lib/mixer-ogg
+    CLIBS	+= -lvorbisidec -lvorbisfile -lpng -ljpeg -lfreetype -lSDL -lz -lm -larmmem -static
 endif
 ifeq "$(TARGET)" ""
     CC		= gcc

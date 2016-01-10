@@ -17,6 +17,9 @@ static void check_obstacles (struct hero *griel, int round, int map[][11][16], M
 static void controls (struct hero *griel, uint *fullscreench);
 
 static Mix_Music *bsogame = NULL;
+#if defined(GP2X)
+static Uint32 pressed_buttons[8];
+#endif
 
 void game (SDL_Surface *screen, uint *state, uint *level) {
 
@@ -62,55 +65,23 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	uint fullscreench = 0;
 
 	/* load files */
-	temp = IMG_Load(DATA_PATH "png/round.png");
-	roundscreen = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/blocks.png");
-	blocks = SDL_DisplayFormatAlpha(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/gamehead.png");
-	headgame = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/fonts.png");
-	fonts = SDL_DisplayFormatAlpha(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/blackbox.png");
-	blackbox = SDL_DisplayFormat(temp);
-	window = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/gameover.png");
-	gameoverscreen = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw1.png");
-	passscreen01 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw2.png");
-	passscreen02 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw3.png");
-	passscreen03 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw4.png");
-	passscreen04 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw5.png");
-	passscreen05 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw6.png");
-	passscreen06 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw7.png");
-	passscreen07 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw8.png");
-	passscreen08 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw9.png");
-	passscreen09 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
-	temp = IMG_Load(DATA_PATH "png/passw10.png");
-	passscreen10 = SDL_DisplayFormat(temp);
-	SDL_FreeSurface(temp);
+	roundscreen = load_image_display_format(DATA_PATH "png/round.png");
+	blocks = load_image_display_format_alpha(DATA_PATH "png/blocks.png");
+	headgame = load_image_display_format(DATA_PATH "png/gamehead.png");
+	fonts = load_image_display_format(DATA_PATH "png/fonts.png");
+	blackbox = load_image_display_format(DATA_PATH "png/blackbox.png");
+	window = SDL_ConvertSurface(blackbox, blackbox->format, blackbox->flags);
+	gameoverscreen = load_image_display_format(DATA_PATH "png/gameover.png");
+	passscreen01 = load_image_display_format(DATA_PATH "png/passw1.png");
+	passscreen02 = load_image_display_format(DATA_PATH "png/passw2.png");
+	passscreen03 = load_image_display_format(DATA_PATH "png/passw3.png");
+	passscreen04 = load_image_display_format(DATA_PATH "png/passw4.png");
+	passscreen05 = load_image_display_format(DATA_PATH "png/passw5.png");
+	passscreen06 = load_image_display_format(DATA_PATH "png/passw6.png");
+	passscreen07 = load_image_display_format(DATA_PATH "png/passw7.png");
+	passscreen08 = load_image_display_format(DATA_PATH "png/passw8.png");
+	passscreen09 = load_image_display_format(DATA_PATH "png/passw9.png");
+	passscreen10 = load_image_display_format(DATA_PATH "png/passw10.png");
 	stageclear = Mix_LoadWAV(DATA_PATH "music/stageclear.ogg");
 	gameover = Mix_LoadMUS(DATA_PATH "music/gameover.ogg");
 	giveup = Mix_LoadWAV(DATA_PATH "fx/fx_giveup.ogg");
@@ -174,9 +145,14 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 							/* Apply transparency */
 							SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
 							SDL_BlitSurface(blackbox,NULL,window,NULL);
-							if ((fademode == 0) && (fadecounter == 255))
+							if ((fademode == 0) && (fadecounter == 255)) {
 								/* Disable push keys until game start */
 								SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+#if defined(GP2X)
+								SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
+								memset(pressed_buttons, 0, sizeof(pressed_buttons));
+#endif
+							}
 							if ((fademode == 0) && (fadecounter > 0))
 								fadecounter -= 3;
 							if ((fademode == 1) && (fadecounter < 255))
@@ -191,6 +167,9 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 								loadoninit = 1;
 								fademode = 0;
 								SDL_EventState(SDL_KEYDOWN, SDL_ENABLE); /* Enable pushes keys */
+#if defined(GP2X)
+								SDL_EventState(SDL_JOYBUTTONDOWN, SDL_ENABLE);
+#endif
 							}
 							break;
 			case 1: /* If stage starts now, load music */
@@ -266,8 +245,13 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 								SDL_BlitSurface(passscreen10,NULL,window,NULL);
 							SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
 							SDL_BlitSurface(blackbox,NULL,window,NULL);
-							if ((fademode == 0) && (fadecounter == 255))
+							if ((fademode == 0) && (fadecounter == 255)) {
 								SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+#if defined(GP2X)
+								SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
+								memset(pressed_buttons, 0, sizeof(pressed_buttons));
+#endif
+							}
 							if ((fademode == 0) && (fadecounter > 0))
 								fadecounter -= 3;
 							if ((fademode == 1) && (fadecounter < 255))
@@ -556,6 +540,9 @@ static void check_obstacles (struct hero *griel, int round, int map[][11][16], M
 static void controls (struct hero *griel, uint *fullscreench) {
 
 	SDL_Event keystroke;
+#if defined(GP2X)
+	Uint32 ticks = 0;
+#endif
 
 	while (SDL_PollEvent(&keystroke)) {
 		if (keystroke.type == SDL_QUIT)
@@ -598,6 +585,104 @@ static void controls (struct hero *griel, uint *fullscreench) {
 			if (keystroke.key.keysym.sym == KEY_QUIT)
 				exit(0);
 		}
+#if defined(GP2X)
+		if (keystroke.type == SDL_JOYBUTTONDOWN) {
+			if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
+				if ((griel->locked == 0) && (griel->deathanimation == 0)) {
+					griel->locked = 1;
+					griel->direction = 6;
+				}
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_UP) {
+				if (ticks == 0) ticks = SDL_GetTicks();
+				pressed_buttons[keystroke.jbutton.button] = ticks;
+				if ((griel->locked == 0) && (griel->positiony > 0)) {
+					griel->locked = 1;
+					griel->direction = 1;
+				}
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_DOWN) {
+				if (ticks == 0) ticks = SDL_GetTicks();
+				pressed_buttons[keystroke.jbutton.button] = ticks;
+				if ((griel->locked == 0) && (griel->positiony < 10)) {
+					griel->locked = 1;
+					griel->direction = 2;
+				}
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_LEFT) {
+				if (ticks == 0) ticks = SDL_GetTicks();
+				pressed_buttons[keystroke.jbutton.button] = ticks;
+				if ((griel->locked == 0) && (griel->positionx > 0)) {
+					griel->locked = 1;
+					griel->direction = 3;
+				}
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_RIGHT) {
+				if (ticks == 0) ticks = SDL_GetTicks();
+				pressed_buttons[keystroke.jbutton.button] = ticks;
+				if ((griel->locked == 0) && (griel->positionx < 15)) {
+					griel->locked = 1;
+					griel->direction = 4;
+				}
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
+				Change_HW_Audio_Volume(4);
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
+				Change_HW_Audio_Volume(-4);
+			}
+			if (keystroke.jbutton.button == BUTTON_QUIT)
+				exit(0);
+		}
+		if (keystroke.type == SDL_JOYBUTTONUP) {
+			if (keystroke.jbutton.button == GP2X_BUTTON_UP) {
+				pressed_buttons[keystroke.jbutton.button] = 0;
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_DOWN) {
+				pressed_buttons[keystroke.jbutton.button] = 0;
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_LEFT) {
+				pressed_buttons[keystroke.jbutton.button] = 0;
+			}
+			if (keystroke.jbutton.button == GP2X_BUTTON_RIGHT) {
+				pressed_buttons[keystroke.jbutton.button] = 0;
+			}
+		}
+#endif
 	}
+
+#if defined(GP2X)
+	if (ticks == 0) ticks = SDL_GetTicks();
+	int button;
+	for (button = 0; button < 8; button++)
+	{
+		if ((pressed_buttons[button] == 0) || (ticks - pressed_buttons[button] < 30)) continue;
+
+		if (button == GP2X_BUTTON_UP) {
+			if ((griel->locked == 0) && (griel->positiony > 0)) {
+				griel->locked = 1;
+				griel->direction = 1;
+			}
+		}
+		if (button == GP2X_BUTTON_DOWN) {
+			if ((griel->locked == 0) && (griel->positiony < 10)) {
+				griel->locked = 1;
+				griel->direction = 2;
+			}
+		}
+		if (button == GP2X_BUTTON_LEFT) {
+			if ((griel->locked == 0) && (griel->positionx > 0)) {
+				griel->locked = 1;
+				griel->direction = 3;
+			}
+		}
+		if (button == GP2X_BUTTON_RIGHT) {
+			if ((griel->locked == 0) && (griel->positionx < 15)) {
+				griel->locked = 1;
+				griel->direction = 4;
+			}
+		}
+	}
+#endif
 
 }

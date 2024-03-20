@@ -33,7 +33,8 @@ void ending (SDL_Surface *screen, uint *state) {
 	endings[2] = load_image_display_format(DATA_PATH "png/ending3.png");
 	endings[3] = load_image_display_format(DATA_PATH "png/theend.png");
 #endif
-	argh = Mix_LoadWAV(DATA_PATH "fx/fx_uaaah.ogg");
+	SDL_SetSurfaceBlendMode(blackbox, SDL_BLENDMODE_BLEND);
+	argh = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_uaaah.ogg", "rb"), 1);
 	bso = Mix_LoadMUS(DATA_PATH "music/ending.ogg");
 
 #ifdef _RENDER_320_240
@@ -49,12 +50,12 @@ void ending (SDL_Surface *screen, uint *state) {
 #ifdef _RENDER_320_240
 		SDL_BlitSurface(endings[step],NULL,screen,&dst);
 		/* Transparency */
-		SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+		SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 		SDL_BlitSurface(blackbox,NULL,screen,&dst);
 #else
 		SDL_BlitSurface(endings[step],&srcending,screen,&destending);
 		/* Transparency */
-		SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+		SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 		SDL_BlitSurface(blackbox,&srcending,screen,&destending);
 #endif
 
@@ -75,7 +76,7 @@ void ending (SDL_Surface *screen, uint *state) {
 			case 1: /* ending 2 */
 							counter ++;
 							if (counter == 1070) /* Demon dying */
-								Mix_PlayChannel(0,argh,0);
+								Mix_PlayChannelTimed(0,argh,0,-1);
 							if ((counter > 1069) && (counter < 1153))
 								fadecounter-=3;
 							if ((counter > 2053) && (counter < 2137))
@@ -104,7 +105,7 @@ void ending (SDL_Surface *screen, uint *state) {
 								*state = 0;
 							break;
 		}
-		SDL_Flip(screen);
+		flip_screen(screen);
 		framerate = control_frames(2,framerate);
 
 	}

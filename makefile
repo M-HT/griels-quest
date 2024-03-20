@@ -1,7 +1,7 @@
 #
 # use `make TARGET=gcw0` to build for GCW-Zero
 # use `make TARGET=pandora` to build for Pandora
-# use `make TARGET=gp2x` to build for GP2X
+# use `make TARGET=pyra` to build for DragonBox Pyra
 # and `make` for normal build
 #
 
@@ -9,8 +9,8 @@
 
 NAME	= griels
 
-CFLAGS	= -s -O2 `sdl-config --cflags`
-CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_mixer -lm
+CFLAGS	= -s -O2 `sdl2-config --cflags`
+CLIBS	= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lm
 
 ifdef RUTAS_RELATIVAS
 	CFLAGS += -D_RUTAS_RELATIVAS
@@ -25,11 +25,9 @@ ifeq "$(TARGET)" "pandora"
     CC		= pandora-gcc
     PFLAGS	= -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=vfpv3 -mfloat-abi=softfp -DPANDORA
 endif
-ifeq "$(TARGET)" "gp2x"
-    CC		= arm-open2x-linux-gcc
-    PFLAGS	= -march=armv4t -mtune=arm920t -DGP2X
-    CFLAGS	+= -L`sdl-config --prefix`/lib/mixer-ogg
-    CLIBS	+= -lvorbisidec -lvorbisfile -lpng -ljpeg -lSDL -lz -lm -larmmem -static
+ifeq "$(TARGET)" "pyra"
+    CC		= gcc
+    PFLAGS	= -march=armv7ve+simd -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -mfloat-abi=hard -mthumb -DPYRA
 endif
 ifeq "$(TARGET)" ""
     CC		= gcc

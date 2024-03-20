@@ -47,7 +47,7 @@ void history (SDL_Surface *screen, uint *state) {
 	pictures = load_image_display_format(DATA_PATH "png/howtoplay.png");
 	texts = load_image_display_format(DATA_PATH "png/texts.png");
 	bso = Mix_LoadMUS(DATA_PATH "music/history.ogg");
-	lol = Mix_LoadWAV(DATA_PATH "fx/fx_hahaha.ogg");
+	lol = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_hahaha.ogg", "rb"), 1);
 
 	/* Loop */
 	framerate = control_frames(1,0);
@@ -55,26 +55,12 @@ void history (SDL_Surface *screen, uint *state) {
 		while (SDL_PollEvent(&keystroke)) {
 			if (keystroke.type == SDL_QUIT)
 				exit(0);
-			if (keystroke.type == SDL_KEYDOWN) {
+			if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 				if (keystroke.key.keysym.sym == KEY_QUIT)
 					exit(0);
 				if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2))
 					*state = 2;
 			}
-#if defined(GP2X)
-			if (keystroke.type == SDL_JOYBUTTONDOWN) {
-				if (keystroke.jbutton.button == BUTTON_QUIT)
-					exit(0);
-				if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2))
-					*state = 2;
-				if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-					Change_HW_Audio_Volume(4);
-				}
-				if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-					Change_HW_Audio_Volume(-4);
-				}
-			}
-#endif
 		}
 		switch (step) {
 			case 0: /* show title */
@@ -105,7 +91,7 @@ void history (SDL_Surface *screen, uint *state) {
 							break;
 			case 1: /* show history 1 */
 							if (waittime == 60) /* Demon LOLed */
-								Mix_PlayChannel(0,lol,0);
+								Mix_PlayChannelTimed(0,lol,0,-1);
 							if ((playmusic == 0) && (waittime == 180)) {
 								playmusic = 1;
 								Mix_PlayMusic(bso,0);
@@ -232,7 +218,7 @@ void history (SDL_Surface *screen, uint *state) {
 #else
 		BlitDoubleSurface(window,screen);
 #endif
-		SDL_Flip(screen);
+		flip_screen(screen);
 		framerate = control_frames(2,framerate);
 	}
 

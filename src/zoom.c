@@ -1,7 +1,6 @@
 /* zoom.c */
 
 # include <stdint.h>
-# include <SDL_rotozoom.h>
 
 # include "zoom.h"
 # include "comun.h"
@@ -51,9 +50,12 @@ void BlitDoubleSurface (SDL_Surface *src, SDL_Surface *dst) {
             SDL_FreeSurface(doble);
         }
     } else {
-        doble = zoomSurface(src,2,2,0);
-        SDL_BlitSurface(doble,NULL,dst,NULL);
-        SDL_FreeSurface(doble);
+        SDL_Rect dstrect;
+        dstrect.x = 0;
+        dstrect.y = 0;
+        dstrect.w = src->w * 2;
+        dstrect.h = src->h * 2;
+        SDL_BlitScaled(src,NULL,dst,&dstrect);
     }
 }
 

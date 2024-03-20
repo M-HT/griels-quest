@@ -310,7 +310,7 @@ void show_hero (struct hero *griel, int counter, SDL_Surface *window, SDL_Surfac
 			if (*soundblock == 0) { /* Giveup sound */
 				Mix_HaltMusic();
 				*soundblock = 1;
-				Mix_PlayChannel(0,giveup,0);
+				Mix_PlayChannelTimed(0,giveup,0,-1);
 			}
 			if (griel->deathturns < 7) {
 				switch (griel->deathanimation) {

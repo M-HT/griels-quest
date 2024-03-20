@@ -32,7 +32,8 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 
 	/* Load files */
 	blackbox = load_image_display_format(DATA_PATH "png/blackbox.png");
-	window = SDL_ConvertSurface(blackbox, blackbox->format, blackbox->flags);
+	window = SDL_ConvertSurface(blackbox, blackbox->format, 0);
+	SDL_SetSurfaceBlendMode(blackbox, SDL_BLENDMODE_BLEND);
 	karoshi = load_image_display_format(DATA_PATH "png/karoshi.png");
 	startscreen = load_image_display_format(DATA_PATH "png/startscreen.png");
 	startinfo = load_image_display_format_alpha(DATA_PATH "png/startinfo.png");
@@ -40,11 +41,11 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 	menu = load_image_display_format(DATA_PATH "png/menu.png");
 	passwords = load_image_display_format_alpha(DATA_PATH "png/password.png");
 	fonts = load_image_display_format(DATA_PATH "png/fonts.png");
-	arrow = SDL_ConvertSurface(fonts, fonts->format, fonts->flags);
-	start = Mix_LoadWAV(DATA_PATH "fx/fx_start.ogg");
-	poff = Mix_LoadWAV(DATA_PATH "fx/fx_poff.ogg");
-	error = Mix_LoadWAV(DATA_PATH "fx/fx_error.ogg");
-	ding = Mix_LoadWAV(DATA_PATH "fx/fx_ding.ogg");
+	arrow = SDL_ConvertSurface(fonts, fonts->format, 0);
+	start = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_start.ogg", "rb"), 1);
+	poff = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_poff.ogg", "rb"), 1);
+	error = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_error.ogg", "rb"), 1);
+	ding = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_ding.ogg", "rb"), 1);
 
 	SDL_Rect srcscreen = {0,0,256,224};
 	SDL_Rect destscreen = {0,0,256,224};
@@ -79,13 +80,13 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 			case 0: /* Karoshi logo */
 							SDL_BlitSurface(karoshi,&srcscreen,window,&destscreen);
 							/* Apply transparency */
-							SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+							SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 							SDL_BlitSurface(blackbox,&srcscreen,window,&destscreen);
 							counter ++;
 							while (SDL_PollEvent(&keystroke)) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
-								if (keystroke.type == SDL_KEYDOWN) {
+								if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
@@ -94,23 +95,6 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										fadecounter = 255;
 									}
 								}
-#if defined(GP2X)
-								if (keystroke.type == SDL_JOYBUTTONDOWN) {
-									if (keystroke.jbutton.button == BUTTON_QUIT)
-										exit(0);
-									if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
-										counter = 341;
-										step = 1;
-										fadecounter = 255;
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-										Change_HW_Audio_Volume(4);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-										Change_HW_Audio_Volume(-4);
-									}
-								}
-#endif
 							}
 							if (counter < 86)
 								fadecounter-=3;
@@ -124,36 +108,20 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 			case 1: /* Press start screen */
 							SDL_BlitSurface(startscreen,&srcscreen,window,&destscreen);
 							/* Apply transparency */
-							SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+							SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 							SDL_BlitSurface(blackbox,&srcscreen,window,&destscreen);
 							counter ++;
 							while (SDL_PollEvent(&keystroke)) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
-								if (keystroke.type == SDL_KEYDOWN) {
+								if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
-										Mix_PlayChannel(-1,start,0);
+										Mix_PlayChannelTimed(-1,start,0,-1);
 										step = 3;
 									}
 								}
-#if defined(GP2X)
-								if (keystroke.type == SDL_JOYBUTTONDOWN) {
-									if (keystroke.jbutton.button == BUTTON_QUIT)
-										exit(0);
-									if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
-										Mix_PlayChannel(-1,start,0);
-										step = 3;
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-										Change_HW_Audio_Volume(4);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-										Change_HW_Audio_Volume(-4);
-									}
-								}
-#endif
 							}
 							if ((counter > 340) && (counter < 426))
 								fadecounter-=3;
@@ -170,7 +138,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							while (SDL_PollEvent(&keystroke)) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
-								if (keystroke.type == SDL_KEYDOWN) {
+								if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
@@ -179,23 +147,6 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										fadecounter = 255;
 									}
 								}
-#if defined(GP2X)
-								if (keystroke.type == SDL_JOYBUTTONDOWN) {
-									if (keystroke.jbutton.button == BUTTON_QUIT)
-										exit(0);
-									if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
-										step = 1;
-										counter = 341;
-										fadecounter = 255;
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-										Change_HW_Audio_Volume(4);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-										Change_HW_Audio_Volume(-4);
-									}
-								}
-#endif
 							}
 							if (animcounter < 59)
 								animcounter ++;
@@ -233,7 +184,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								srctext.h = 20;
 								destext.h = 20;
 								SDL_BlitSurface(startinfo,&srctext,window,&destext);
-								SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+								SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 								SDL_BlitSurface(blackbox,&srcscreen,window,&destscreen);
 							}
 							if ((counter > 1988) && (counter < 2590)) {
@@ -248,7 +199,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							}
 							if ((counter > 3190) && (counter < 3275)) {
 								fadecounter += 3;
-								SDL_SetAlpha(blackbox,SDL_RLEACCEL|SDL_SRCALPHA,(Uint8)fadecounter);
+								SDL_SetSurfaceAlphaMod(blackbox,(Uint8)fadecounter);
 								SDL_BlitSurface(blackbox,&srcscreen,window,&destscreen);
 							}
 							if (counter == 3274) {
@@ -268,7 +219,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							while (SDL_PollEvent(&keystroke)) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
-								if (keystroke.type == SDL_KEYDOWN) {
+								if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == SDLK_UP) || (keystroke.key.keysym.sym == SDLK_DOWN)) {
@@ -284,36 +235,9 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										}
 										if (posarrow == 1)
 											step = 4;
-										Mix_PlayChannel(-1,start,0);
+										Mix_PlayChannelTimed(-1,start,0,-1);
 									}
 								}
-#if defined(GP2X)
-								if (keystroke.type == SDL_JOYBUTTONDOWN) {
-									if (keystroke.jbutton.button == BUTTON_QUIT)
-										exit(0);
-									if ((keystroke.jbutton.button == GP2X_BUTTON_UP) || (keystroke.jbutton.button == GP2X_BUTTON_DOWN)) {
-										if (posarrow == 0)
-											posarrow = 1;
-										else
-											posarrow = 0;
-									}
-									if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
-										if (posarrow == 0) {
-											*state = 1;
-											*level = 1;
-										}
-										if (posarrow == 1)
-											step = 4;
-										Mix_PlayChannel(-1,start,0);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-										Change_HW_Audio_Volume(4);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-										Change_HW_Audio_Volume(-4);
-									}
-								}
-#endif
 							}
 							break;
 			case 4: /* show password selection */
@@ -322,7 +246,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							while (SDL_PollEvent(&keystroke)) {
 								if (keystroke.type == SDL_QUIT)
 									exit(0);
-								if (keystroke.type == SDL_KEYDOWN) {
+								if ((keystroke.type == SDL_KEYDOWN) && (!keystroke.key.repeat)) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if (keystroke.key.keysym.sym == SDLK_RIGHT) {
@@ -372,7 +296,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 												n ++;
 											else
 												n = 0;
-											Mix_PlayChannel(-1,start,0);
+											Mix_PlayChannelTimed(-1,start,0,-1);
 										}
 										if (selectorpos == 37) { /* Tilde */
 											passint[n] = 0;
@@ -380,7 +304,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 												n ++;
 											else
 												n = 0;
-											Mix_PlayChannel(-1,start,0);
+											Mix_PlayChannelTimed(-1,start,0,-1);
 										}
 										if (selectorpos == 38) { /* Delete */
 											if (n > 0) {
@@ -391,95 +315,12 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 												n = 7;
 												passint[n] = 0;
 											}
-											Mix_PlayChannel(-1,poff,0);
+											Mix_PlayChannelTimed(-1,poff,0,-1);
 										}
 										if (selectorpos == 39) /* Ok key */
 											validatepass = 1;
 									}
 								}
-#if defined(GP2X)
-								if (keystroke.type == SDL_JOYBUTTONDOWN) {
-									if (keystroke.jbutton.button == BUTTON_QUIT)
-										exit(0);
-									if (keystroke.jbutton.button == GP2X_BUTTON_RIGHT) {
-										if (destselector.x < 173) {
-											destselector.x += 16;
-											selectorpos ++;
-										}
-										else {
-											destselector.x -= 112;
-											selectorpos -= 7;
-										}
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_LEFT) {
-										if (destselector.x > 61) {
-											destselector.x -= 16;
-											selectorpos --;
-										}
-										else {
-											destselector.x += 112;
-											selectorpos += 7;
-										}
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_UP) {
-										if (destselector.y > 101) {
-											destselector.y -= 16;
-											selectorpos -= 8;
-										}
-										else {
-											destselector.y += 64;
-											selectorpos += 32;
-										}
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_DOWN) {
-										if (destselector.y < 165) {
-											destselector.y += 16;
-											selectorpos += 8;
-										}
-										else {
-											destselector.y -= 64;
-											selectorpos -= 32;
-										}
-									}
-									if ((keystroke.jbutton.button == BUTTON_START) || (keystroke.jbutton.button == BUTTON_START2)) {
-										if (selectorpos < 37) {
-											passint[n] = selectorpos;
-											if (n < 7)
-												n ++;
-											else
-												n = 0;
-											Mix_PlayChannel(-1,start,0);
-										}
-										if (selectorpos == 37) { /* Tilde */
-											passint[n] = 0;
-											if (n < 7)
-												n ++;
-											else
-												n = 0;
-											Mix_PlayChannel(-1,start,0);
-										}
-										if (selectorpos == 38) { /* Delete */
-											if (n > 0) {
-												passint[n-1] = 0;
-												n --;
-											}
-											else {
-												n = 7;
-												passint[n] = 0;
-											}
-											Mix_PlayChannel(-1,poff,0);
-										}
-										if (selectorpos == 39) /* Ok key */
-											validatepass = 1;
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLUP) {
-										Change_HW_Audio_Volume(4);
-									}
-									if (keystroke.jbutton.button == GP2X_BUTTON_VOLDOWN) {
-										Change_HW_Audio_Volume(-4);
-									}
-								}
-#endif
 							}
 							/* Showing characters */
 							for (i=0;i<8;i++) {
@@ -517,11 +358,11 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								validatepass = 0;
 								if (result > 0) {
 									*level = result;
-									Mix_PlayChannel(-1,ding,0);
+									Mix_PlayChannelTimed(-1,ding,0,-1);
 									*state = 2;
 								}
 								else
-									Mix_PlayChannel(-1,error,0);
+									Mix_PlayChannelTimed(-1,error,0,-1);
 							}
 							break;
 		}
@@ -532,7 +373,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 		/* Zoom 2x */
 		BlitDoubleSurface(window,screen);
 #endif
-		SDL_Flip(screen);
+		flip_screen(screen);
 		framerate = control_frames(2,framerate);
 	}
 

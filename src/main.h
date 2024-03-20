@@ -5,5 +5,4 @@
 int control_frames (int i, int frate);
 SDL_Surface *load_image_display_format (const char *filename);
 SDL_Surface *load_image_display_format_alpha (const char *filename);
-void flip_screen (SDL_Surface *screen);
 void change_fullscreen (void);

@@ -6,10 +6,12 @@
 # include "main.h"
 # include "comun.h"
 
-void ending (SDL_Surface *screen, uint *state) {
+void ending (SDL_Renderer *renderer, uint *state) {
 
 	SDL_Surface *blackbox = NULL;
 	SDL_Surface *endings[4] = { NULL, NULL, NULL, NULL };
+	SDL_Surface *screen = NULL;
+	SDL_Texture *screen_texture = NULL;
 
 	Mix_Music *bso;
 	Mix_Chunk *argh;
@@ -18,6 +20,8 @@ void ending (SDL_Surface *screen, uint *state) {
 	uint fadecounter = 255;
 	uint counter = 0;
 	int framerate = 0;
+
+	int screen_w, screen_h;
 
 	/* Loading files */
 #ifdef _RENDER_320_240
@@ -37,8 +41,12 @@ void ending (SDL_Surface *screen, uint *state) {
 	argh = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_uaaah.ogg", "rb"), 1);
 	bso = Mix_LoadMUS(DATA_PATH "music/ending.ogg");
 
+	SDL_RenderGetLogicalSize(renderer, &screen_w, &screen_h);
+	screen = SDL_CreateRGBSurface(0, screen_w, screen_h, blackbox->format->BitsPerPixel, blackbox->format->Rmask, blackbox->format->Gmask, blackbox->format->Bmask, blackbox->format->Amask);
+	screen_texture = SDL_CreateTexture(renderer, screen->format->format, SDL_TEXTUREACCESS_STREAMING, screen->w, screen->h);
+
 #ifdef _RENDER_320_240
-	SDL_Rect dst = {32,8,0,0};
+	SDL_Rect dst = {32,8,256,224};
 #else
 	SDL_Rect srcending = {0,0,512,448};
 	SDL_Rect destending = {0,0,512,448};
@@ -105,11 +113,16 @@ void ending (SDL_Surface *screen, uint *state) {
 								*state = 0;
 							break;
 		}
-		flip_screen(screen);
+		SDL_UpdateTexture(screen_texture, NULL, screen->pixels, screen->pitch);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
 		framerate = control_frames(2,framerate);
 
 	}
 
+	SDL_DestroyTexture(screen_texture);
+	SDL_FreeSurface(screen);
 	SDL_FreeSurface(endings[0]);
 	SDL_FreeSurface(endings[1]);
 	SDL_FreeSurface(endings[2]);

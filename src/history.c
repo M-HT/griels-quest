@@ -5,16 +5,15 @@
 
 # include "history.h"
 # include "main.h"
-# include "zoom.h"
 # include "comun.h"
 
-void history (SDL_Surface *screen, uint *state) {
+void history (SDL_Renderer *renderer, uint *state) {
 
 	SDL_Surface *blackbox = NULL;
 	SDL_Surface *pictures = NULL;
 	SDL_Surface *texts = NULL;
-	SDL_Surface *temp = NULL;
 	SDL_Surface *window = NULL;
+	SDL_Texture *window_texture = NULL;
 
 	SDL_Event keystroke;
 	Mix_Music *bso;
@@ -48,6 +47,7 @@ void history (SDL_Surface *screen, uint *state) {
 	texts = load_image_display_format(DATA_PATH "png/texts.png");
 	bso = Mix_LoadMUS(DATA_PATH "music/history.ogg");
 	lol = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_hahaha.ogg", "rb"), 1);
+	window_texture = SDL_CreateTexture(renderer, window->format->format, SDL_TEXTUREACCESS_STREAMING, window->w, window->h);
 
 	/* Loop */
 	framerate = control_frames(1,0);
@@ -212,17 +212,20 @@ void history (SDL_Surface *screen, uint *state) {
 							}
 							break;
 		}
+		SDL_UpdateTexture(window_texture, NULL, window->pixels, window->pitch);
+		SDL_RenderClear(renderer);
 #ifdef _RENDER_320_240
-		SDL_Rect dst = {32,8,0,0};
-		SDL_BlitSurface(window,NULL,screen,&dst);
+		SDL_Rect dst = {32,8,256,224};
+		SDL_RenderCopy(renderer, window_texture, NULL, &dst);
 #else
-		BlitDoubleSurface(window,screen);
+		SDL_RenderCopy(renderer, window_texture, NULL, NULL);
 #endif
-		flip_screen(screen);
+		SDL_RenderPresent(renderer);
 		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */
+	SDL_DestroyTexture(window_texture);
 	SDL_FreeSurface(blackbox);
 	SDL_FreeSurface(pictures);
 	SDL_FreeSurface(texts);

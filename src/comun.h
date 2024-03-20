@@ -12,7 +12,6 @@
 #elif defined(PANDORA) || defined(PYRA)
   #define _RUTAS_RELATIVAS
   #define _FULLSCREEN_ONLY
-  #define _DISPLAY_16BITS
   #define KEY_START SDLK_SPACE
   #define KEY_START2 SDLK_PAGEDOWN
   #define KEY_QUIT SDLK_ESCAPE

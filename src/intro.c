@@ -5,17 +5,15 @@
 
 # include "intro.h"
 # include "main.h"
-# include "zoom.h"
 # include "comun.h"
 
 static int passwvalidate (uint passint[]);
 
-void game_intro (SDL_Surface *screen, uint *state, uint *level) {
+void game_intro (SDL_Renderer *renderer, uint *state, uint *level) {
 
 	SDL_Surface *blackbox = NULL;
 	SDL_Surface *karoshi = NULL;
 	SDL_Surface *window = NULL;
-	SDL_Surface *temp = NULL;
 	SDL_Surface *blocks = NULL;
 	SDL_Surface *startscreen = NULL;
 	SDL_Surface *startinfo = NULL;
@@ -27,6 +25,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 	Mix_Chunk *poff = NULL;
 	Mix_Chunk *error = NULL;
 	Mix_Chunk *ding = NULL;
+	SDL_Texture *window_texture = NULL;
 
 	SDL_Event keystroke;
 
@@ -46,6 +45,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 	poff = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_poff.ogg", "rb"), 1);
 	error = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_error.ogg", "rb"), 1);
 	ding = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_ding.ogg", "rb"), 1);
+	window_texture = SDL_CreateTexture(renderer, window->format->format, SDL_TEXTUREACCESS_STREAMING, window->w, window->h);
 
 	SDL_Rect srcscreen = {0,0,256,224};
 	SDL_Rect destscreen = {0,0,256,224};
@@ -366,18 +366,20 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 							}
 							break;
 		}
+		SDL_UpdateTexture(window_texture, NULL, window->pixels, window->pitch);
+		SDL_RenderClear(renderer);
 #ifdef _RENDER_320_240
-		SDL_Rect dst = {32,8,0,0};
-		SDL_BlitSurface(window,NULL,screen,&dst);
+		SDL_Rect dst = {32,8,256,224};
+		SDL_RenderCopy(renderer, window_texture, NULL, &dst);
 #else
-		/* Zoom 2x */
-		BlitDoubleSurface(window,screen);
+		SDL_RenderCopy(renderer, window_texture, NULL, NULL);
 #endif
-		flip_screen(screen);
+		SDL_RenderPresent(renderer);
 		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */
+	SDL_DestroyTexture(window_texture);
 	SDL_FreeSurface(karoshi);
 	SDL_FreeSurface(blackbox);
 	SDL_FreeSurface(blocks);

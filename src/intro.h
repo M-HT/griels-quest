@@ -2,4 +2,4 @@
 
 # include <SDL.h>
 
-void game_intro (SDL_Surface *screen, uint *state, uint *level);
+void game_intro (SDL_Renderer *renderer, uint *state, uint *level);

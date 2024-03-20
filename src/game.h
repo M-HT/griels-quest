@@ -4,5 +4,5 @@
 
 # include "array.h"
 
-void game (SDL_Surface *screen, uint *state, uint *level);
+void game (SDL_Renderer *renderer, uint *state, uint *level);
 

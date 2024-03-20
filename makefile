@@ -9,7 +9,7 @@
 
 NAME	= griels
 
-CFLAGS	= -s -O2 `sdl2-config --cflags`
+CFLAGS	= -s -O2 -Wall `sdl2-config --cflags`
 CLIBS	= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lm
 
 ifdef RUTAS_RELATIVAS
@@ -23,7 +23,7 @@ ifeq "$(TARGET)" "gcw0"
 endif
 ifeq "$(TARGET)" "pandora"
     CC		= pandora-gcc
-    PFLAGS	= -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=vfpv3 -mfloat-abi=softfp -DPANDORA
+    PFLAGS	= -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=vfpv3 -mfloat-abi=softfp -mthumb -DPANDORA
 endif
 ifeq "$(TARGET)" "pyra"
     CC		= gcc
@@ -46,8 +46,7 @@ SRC	= ./src/main.c \
 	  ./src/hud.c \
 	  ./src/hero.c \
 	  ./src/loading.c \
-	  ./src/ending.c \
-	  ./src/zoom.c
+	  ./src/ending.c
 
 all: $(NAME)
 

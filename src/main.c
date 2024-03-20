@@ -16,13 +16,10 @@
 # include "comun.h"
 
 static void initsdl(void);
-static void calc_flip_rect(void);
 
 static SDL_Window *window;
-static SDL_Surface *window_surface;
-static SDL_Surface *screen;
-static SDL_PixelFormat *alpha_format;
-static SDL_Rect flip_rect;
+static SDL_Renderer *renderer;
+static SDL_PixelFormat *screen_format, *alpha_format;
 
 #undef main
 int main() {
@@ -38,11 +35,6 @@ int main() {
 #else
 	#define SDL_FLAGS 0
 #endif
-#ifdef _DISPLAY_16BITS
-	#define SDL_DISPLAY_BITS 16
-#else
-	#define SDL_DISPLAY_BITS 32
-#endif
 #ifdef _RENDER_320_240
 	#define SDL_WIDTH 320
 	#define SDL_HEIGHT 240
@@ -50,32 +42,30 @@ int main() {
 	#define SDL_WIDTH 512
 	#define SDL_HEIGHT 448
 #endif
-	window = SDL_CreateWindow("Griel's Quest for the Sangraal", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SDL_WIDTH, SDL_HEIGHT, SDL_FLAGS |  SDL_WINDOW_HIDDEN);
+	window = SDL_CreateWindow("Griel's Quest for the Sangraal", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SDL_WIDTH, SDL_HEIGHT, SDL_FLAGS | SDL_WINDOW_HIDDEN);
 	if (window == NULL) {
 		printf("Error creating window: %s\n",SDL_GetError());
 		return 1;
 	}
 
-	window_surface = SDL_GetWindowSurface(window);
-	if (window_surface == NULL) {
-		printf("Error creating window surface: %s\n",SDL_GetError());
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+	if (renderer == NULL) {
+		printf("Error creating renderer: %s\n",SDL_GetError());
 		return 1;
 	}
 
-	screen = SDL_CreateRGBSurface(0, SDL_WIDTH, SDL_HEIGHT, SDL_DISPLAY_BITS, 0, 0, 0, 0);
-	if (screen == NULL) {
-		printf("Error creating screen surface: %s\n",SDL_GetError());
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+	SDL_RenderSetLogicalSize(renderer, SDL_WIDTH, SDL_HEIGHT);
+
+	screen_format = SDL_AllocFormat(SDL_MasksToPixelFormatEnum(32, 0, 0, 0, 0));
+	if (screen_format == NULL) {
+		printf("Error creating screen format: %s\n",SDL_GetError());
 		return 1;
 	}
 
-	if (screen->format->BitsPerPixel == 32) {
-		Rmask = screen->format->Rmask;
-		Gmask = screen->format->Gmask;
-		Bmask = screen->format->Bmask;
-	} else {
-		int bpp;
-		SDL_PixelFormatEnumToMasks(SDL_MasksToPixelFormatEnum(32, 0, 0, 0, 0), &bpp, &Rmask, &Gmask, &Bmask, &Amask);
-	}
+	Rmask = screen_format->Rmask;
+	Gmask = screen_format->Gmask;
+	Bmask = screen_format->Bmask;
 	Amask = ~(Rmask | Gmask | Bmask);
 	alpha_format = SDL_AllocFormat(SDL_MasksToPixelFormatEnum(32, Rmask, Gmask, Bmask, Amask));
 	if (alpha_format == NULL) {
@@ -85,21 +75,19 @@ int main() {
 
 	SDL_ShowWindow(window);
 
-	calc_flip_rect();
-
 	/* Disable cursor */
 	SDL_ShowCursor(SDL_DISABLE);
 
 	/* Loading part of the game */
 	while (state < 4) {
 		switch (state) {
-			case 0: game_intro (screen, &state, &level);
+			case 0: game_intro (renderer, &state, &level);
 							break;
-			case 1: history (screen, &state);
+			case 1: history (renderer, &state);
 							break;
-			case 2: game (screen, &state, &level);
+			case 2: game (renderer, &state, &level);
 							break;
-			case 3: ending (screen,&state);
+			case 3: ending (renderer,&state);
 							break;
 		}
 	}
@@ -148,27 +136,6 @@ static void initsdl(void) {
 	atexit(Mix_CloseAudio);
 }
 
-static void calc_flip_rect(void) {
-	if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
-		if (((float)window_surface->w) / screen->w <= ((float)window_surface->h) / screen->h) {
-			flip_rect.x = 0;
-			flip_rect.w = window_surface->w;
-			flip_rect.h = (window_surface->w * screen->h) / screen->w;
-			flip_rect.y = (window_surface->h - flip_rect.h) / 2;
-		} else {
-			flip_rect.y = 0;
-			flip_rect.h = window_surface->h;
-			flip_rect.w = (window_surface->h * screen->w) / screen->h;
-			flip_rect.x = (window_surface->w - flip_rect.w) / 2;
-		}
-	} else {
-		flip_rect.x = 0;
-		flip_rect.y = 0;
-		flip_rect.w = window_surface->w;
-		flip_rect.h = window_surface->h;
-	}
-}
-
 int control_frames (int i, int frate) {
 
 	int now = SDL_GetTicks();
@@ -195,7 +162,7 @@ SDL_Surface *load_image_display_format (const char *filename) {
 	SDL_Surface *temp, *image;
 
 	temp = IMG_Load(filename);
-	image = SDL_ConvertSurface(temp, screen->format, 0);
+	image = SDL_ConvertSurface(temp, screen_format, 0);
 	SDL_FreeSurface(temp);
 
 	return image;
@@ -211,14 +178,7 @@ SDL_Surface *load_image_display_format_alpha (const char *filename) {
 	return image;
 }
 
-void flip_screen (SDL_Surface *screen) {
-	SDL_BlitScaled(screen, NULL, window_surface, &flip_rect);
-	SDL_UpdateWindowSurface(window);
-}
-
 void change_fullscreen (void) {
 	SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
-	window_surface = SDL_GetWindowSurface(window);
-	calc_flip_rect();
 }
 

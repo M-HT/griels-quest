@@ -9,7 +9,6 @@
 # include "hud.h"
 # include "loading.h"
 # include "main.h"
-# include "zoom.h"
 # include "comun.h"
 
 static void show_tiles (struct hero *griel, int *animationtime, int map[][11][16], SDL_Surface *window, SDL_Surface *blocks, int round, int counter, Mix_Chunk *key);
@@ -21,11 +20,10 @@ static Mix_Music *bsogame = NULL;
 static SDL_Event repeat_key_event;
 static Uint32 repeat_key_next_ticks = 0;
 
-void game (SDL_Surface *screen, uint *state, uint *level) {
+void game (SDL_Renderer *renderer, uint *state, uint *level) {
 
 	SDL_Surface *roundscreen = NULL;
 	SDL_Surface *blocks = NULL;
-	SDL_Surface *temp = NULL;
 	SDL_Surface *headgame = NULL;
 	SDL_Surface *fonts = NULL;
 	SDL_Surface *blackbox = NULL;
@@ -41,6 +39,7 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	SDL_Surface *passscreen08 = NULL;
 	SDL_Surface *passscreen09 = NULL;
 	SDL_Surface *passscreen10 = NULL;
+	SDL_Texture *window_texture = NULL;
 
 	Mix_Music *gameover;
 	Mix_Chunk *stageclear;
@@ -88,6 +87,7 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 	giveup = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_giveup.ogg", "rb"), 1);
 	key = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_key.ogg", "rb"), 1);
 	kill = Mix_LoadWAV_RW(SDL_RWFromFile(DATA_PATH "fx/fx_kill.ogg", "rb"), 1);
+	window_texture = SDL_CreateTexture(renderer, window->format->format, SDL_TEXTUREACCESS_STREAMING, window->w, window->h);
 
 	/* load map data */
 	loaddata(map);
@@ -257,18 +257,20 @@ void game (SDL_Surface *screen, uint *state, uint *level) {
 							break;
 		}
 
+		SDL_UpdateTexture(window_texture, NULL, window->pixels, window->pitch);
+		SDL_RenderClear(renderer);
 #ifdef _RENDER_320_240
-		SDL_Rect dst = {32,8,0,0};
-		SDL_BlitSurface(window,NULL,screen,&dst);
+		SDL_Rect dst = {32,8,256,224};
+		SDL_RenderCopy(renderer, window_texture, NULL, &dst);
 #else
-		/* Zoom 2x */
-		BlitDoubleSurface(window,screen);
+		SDL_RenderCopy(renderer, window_texture, NULL, NULL);
 #endif
-		flip_screen(screen);
+		SDL_RenderPresent(renderer);
 		framerate = control_frames(2,framerate);
 	}
 
 	/* Cleaning */
+	SDL_DestroyTexture(window_texture);
 	SDL_FreeSurface(roundscreen);
 	SDL_FreeSurface(blocks);
 	SDL_FreeSurface(headgame);

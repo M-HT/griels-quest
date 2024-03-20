@@ -2,4 +2,4 @@
 
 # include <SDL.h>
 
-void ending (SDL_Surface *screen, uint *state);
+void ending (SDL_Renderer *renderer, uint *state);

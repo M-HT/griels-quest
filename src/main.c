@@ -5,7 +5,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <SDL.h>
-# include <SDL_ttf.h>
 # include <SDL_getenv.h>
 # include <SDL_image.h>
 # include <SDL_mixer.h>
@@ -145,12 +144,6 @@ static void initsdl(void) {
 		}
 #endif
 #endif
-	/* Init SDLTTF */
-	  if (TTF_Init() < 0) {
-			printf("Error starting SDL_ttf: %s\n",SDL_GetError());
-			exit(1);
-		}
-		atexit(TTF_Quit);
 
 #if defined(GP2X)
 #define MIX_BUFFER_SIZE 512

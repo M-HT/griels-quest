@@ -89,7 +89,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 									if (keystroke.key.keysym.sym == KEY_QUIT)
 										exit(0);
 									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
-										counter = 341;
+										counter = 340;
 										step = 1;
 										fadecounter = 255;
 									}
@@ -112,9 +112,9 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								}
 #endif
 							}
-							if (counter < 85)
+							if (counter < 86)
 								fadecounter-=3;
-							if ((counter > 254) && (counter < 341))
+							if ((counter > 254) && (counter < 340))
 								fadecounter+=3;
 							if (counter == 340) {
 								step = 1;
@@ -175,7 +175,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 										exit(0);
 									if ((keystroke.key.keysym.sym == KEY_START) || (keystroke.key.keysym.sym == KEY_START2)) {
 										step = 1;
-										counter = 341;
+										counter = 340;
 										fadecounter = 255;
 									}
 								}
@@ -255,6 +255,7 @@ void game_intro (SDL_Surface *screen, uint *state, uint *level) {
 								step = 0;
 								counter = 0;
 								animcounter = 0;
+								fadecounter = 255;
 							}
 							break;
 			case 3: /* show menu */

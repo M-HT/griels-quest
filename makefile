@@ -10,7 +10,7 @@
 NAME	= griels
 
 CFLAGS	= -s -O2 `sdl-config --cflags`
-CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer -lm
+CLIBS	= -lSDL_gfx `sdl-config --libs` -lSDL_image -lSDL_mixer -lm
 
 ifdef RUTAS_RELATIVAS
 	CFLAGS += -D_RUTAS_RELATIVAS
@@ -29,7 +29,7 @@ ifeq "$(TARGET)" "gp2x"
     CC		= arm-open2x-linux-gcc
     PFLAGS	= -march=armv4t -mtune=arm920t -DGP2X
     CFLAGS	+= -L`sdl-config --prefix`/lib/mixer-ogg
-    CLIBS	+= -lvorbisidec -lvorbisfile -lpng -ljpeg -lfreetype -lSDL -lz -lm -larmmem -static
+    CLIBS	+= -lvorbisidec -lvorbisfile -lpng -ljpeg -lSDL -lz -lm -larmmem -static
 endif
 ifeq "$(TARGET)" ""
     CC		= gcc
